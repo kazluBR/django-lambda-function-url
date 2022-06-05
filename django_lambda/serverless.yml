@@ -1,0 +1,29 @@
+service: django-lambda
+
+custom:
+  prune:
+    automatic: true
+    number: 3
+
+provider:
+  name: aws
+  region: us-east-1
+  stage: staging
+  ecr:
+    images:
+      django_lambda:
+        path: "."
+
+functions:
+  - app:
+      image: django_lambda
+      memorySize: 256
+      timeout: 900
+      url:
+        cors: true
+
+package:
+  individually: true
+
+plugins:
+  - serverless-prune-plugin

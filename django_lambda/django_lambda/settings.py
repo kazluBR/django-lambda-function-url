@@ -19,9 +19,9 @@ env = environ.Env()
 
 DJANGO_SETTINGS_MODULE = env("DJANGO_SETTINGS_MODULE")
 if "production" in DJANGO_SETTINGS_MODULE:
-    env.read_env(str(BASE_DIR / "production.env"))
+    env.read_env(str(BASE_DIR / ".env.production"))
 elif "staging" in DJANGO_SETTINGS_MODULE:
-    env.read_env(str(BASE_DIR / "staging.env"))
+    env.read_env(str(BASE_DIR / ".env.staging"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "zappa_django_utils",
 ]
 
 MIDDLEWARE = [
@@ -80,12 +81,25 @@ WSGI_APPLICATION = "django_lambda.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+IS_OFFLINE = env("LAMBDA_TASK_ROOT") is None
+SQLITE_BUCKET = env("SQLITE_BUCKET", default="serverless-django")
+
+# I hate different configuration for local and cloud, but this is what we have now.
+if IS_OFFLINE:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "zappa_django_utils.db.backends.s3sqlite",
+            "NAME": "sqlite.db",
+            "BUCKET": SQLITE_BUCKET,
+        }
+    }
 
 
 # Password validation
