@@ -1,0 +1,23 @@
+FROM public.ecr.aws/lambda/python:3.9
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV DJANGO_SETTINGS_MODULE django_lambda.staging
+
+WORKDIR /${LAMBDA_TASK_ROOT}
+
+RUN python -m pip install --upgrade pip
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+RUN pip install pysqlite3-binary==0.4.6
+
+COPY manage.py .
+COPY .env.staging .
+COPY django_lambda ./django_lambda
+COPY app ./app
+
+RUN python manage.py migrate
+RUN python manage.py createsuperuser --noinput
+RUN chmod 777 db.sqlite3
+
+CMD ["django_lambda.wsgi.handler"]
