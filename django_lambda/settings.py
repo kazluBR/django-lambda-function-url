@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import environ
 
+# Fix ImproperlyConfigured: SQLite 3.9.0 or later is required (found 3.7.17)
+__import__("pysqlite3")
+import sys
+
+sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 env = environ.Env()
@@ -23,14 +29,15 @@ if "production" in DJANGO_SETTINGS_MODULE:
 elif "staging" in DJANGO_SETTINGS_MODULE:
     env.read_env(str(BASE_DIR / ".env.staging"))
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env(
-    "DJANGO_SECRET_KEY",
-    default="django-insecure-4$(yr4q+@%tl(a)39a=$4zhd&2*(sk^ku2r12pl0eb(w747clt",
-)
+SECRET_KEY = env("DJANGO_SECRET_KEY", default="<some-secured-key>")
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["127.0.0.1", "localhost"])
 
@@ -81,11 +88,9 @@ WSGI_APPLICATION = "django_lambda.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-IS_OFFLINE = env("LAMBDA_TASK_ROOT") is None
 SQLITE_BUCKET = env("SQLITE_BUCKET", default="serverless-django")
 
-# I hate different configuration for local and cloud, but this is what we have now.
-if IS_OFFLINE:
+if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",

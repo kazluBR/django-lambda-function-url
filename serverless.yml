@@ -9,6 +9,7 @@ provider:
   name: aws
   region: us-east-1
   stage: staging
+  runtime: python3.9
   ecr:
     images:
       django_lambda:
