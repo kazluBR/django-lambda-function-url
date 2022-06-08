@@ -1,0 +1,9 @@
+*.pyc
+__pycache__
+db.sqlite3
+env
+.env.*
+node_modules
+package-lock.json
+.serverless
+unzip_requirements.py

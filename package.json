@@ -1,0 +1,28 @@
+{
+  "name": "django-lambda-function-url",
+  "version": "1.0.0",
+  "description": "A Django Project running on AWS Lambda Function Url",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kazluBR/django-lambda-function-url.git"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "django"
+  ],
+  "author": "Lucas Rollemberg",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kazluBR/django-lambda-function-url/issues"
+  },
+  "homepage": "https://github.com/kazluBR/django-lambda-function-url#readme",
+  "devDependencies": {
+    "serverless": "^3.18.2",
+    "serverless-prune-plugin": "^2.0.1"
+  }
+}
