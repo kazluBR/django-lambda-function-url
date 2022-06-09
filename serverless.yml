@@ -1,5 +1,11 @@
 service: django-lambda
 
+params:
+  staging:
+    DOCKERFILE: Dockerfile.staging
+  prod:
+    DOCKERFILE: Dockerfile.production
+
 custom:
   prune:
     automatic: true
@@ -14,6 +20,7 @@ provider:
     images:
       django_lambda:
         path: "."
+        file: ${param:DOCKERFILE}
 
 functions:
   - app:
