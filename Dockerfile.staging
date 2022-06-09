@@ -18,6 +18,5 @@ COPY app ./app
 
 RUN python manage.py migrate
 RUN python manage.py createsuperuser --noinput
-RUN chmod 777 db.sqlite3
 
 CMD ["django_lambda.wsgi.handler"]
