@@ -9,10 +9,10 @@ WORKDIR /${LAMBDA_TASK_ROOT}
 RUN python -m pip install --upgrade pip
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-RUN pip install pysqlite3-binary==0.4.6
 
 COPY manage.py .
 COPY .env.staging .
+COPY _sqlite3.so .
 COPY django_lambda ./django_lambda
 COPY app ./app
 

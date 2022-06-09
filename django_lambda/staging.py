@@ -1,9 +1,3 @@
-# Fix ImproperlyConfigured: SQLite 3.9.0 or later is required (found 3.7.17)
-__import__("pysqlite3")
-import sys
-
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
-
 import environ
 from .settings import *
 
