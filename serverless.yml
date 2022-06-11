@@ -15,7 +15,7 @@ provider:
   name: aws
   region: us-east-1
   stage: staging
-  runtime: python3.9
+  deploymentBucket: django-lambda-function-url-${self:provider.stage}
   ecr:
     images:
       django_lambda:
@@ -29,6 +29,11 @@ functions:
       timeout: 900
       url:
         cors: true
+      vpc:
+        securityGroupIds:
+          - sg-01bd8270368fa88a4
+        subnetIds:
+          - subnet-067cc5f43fd51d979
 
 package:
   individually: true
