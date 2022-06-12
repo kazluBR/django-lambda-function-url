@@ -16,6 +16,7 @@ provider:
   region: us-east-1
   stage: staging
   deploymentBucket: django-lambda-function-url-${self:provider.stage}
+  logRetentionInDays: 3
   ecr:
     images:
       django_lambda:

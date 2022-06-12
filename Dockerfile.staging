@@ -18,7 +18,9 @@ COPY manage.py .
 COPY .env.staging .
 COPY django_lambda ./django_lambda
 COPY app ./app
+COPY templates ./templates
 
+RUN python manage.py makemigrations
 RUN python manage.py migrate
 RUN python manage.py createsuperuser --noinput; exit 0
 

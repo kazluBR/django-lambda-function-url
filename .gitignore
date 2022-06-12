@@ -6,4 +6,5 @@ env
 node_modules
 package-lock.json
 .serverless
-unzip_requirements.py
+staticfiles
+
