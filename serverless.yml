@@ -2,54 +2,36 @@ service: django-lambda
 
 params:
   staging:
-    DJANGO_SETTINGS: django_lambda.staging
+    DOCKERFILE: Dockerfile.staging
   prod:
-    DJANGO_SETTINGS: django_lambda.production
+    DOCKERFILE: Dockerfile.production
 
 custom:
   prune:
     automatic: true
     number: 3
-  pythonRequirements:
-    dockerizePip: true
-    dockerFile: Dockerfile
-    useDownloadCache: false
-    useStaticCache: false
-    dockerExtraFiles:
-      - /usr/lib64/mysql/libmysqlclient.so.18
-  wsgi:
-    app: django_lambda.wsgi.application
-    packRequirements: false
 
 provider:
   name: aws
   region: us-east-1
   stage: staging
-  runtime: python3.8
   logRetentionInDays: 3
-  environment:
-    DJANGO_SETTINGS_MODULE: ${param:DJANGO_SETTINGS}
+  ecr:
+    images:
+      django_lambda:
+        path: "."
+        file: ${param:DOCKERFILE}
 
 functions:
   - app:
-      handler: wsgi_handler.handler
+      image: django_lambda
       memorySize: 256
       timeout: 900
       url:
         cors: true
-      vpc:
-        securityGroupIds:
-          - sg-01bd8270368fa88a4
-        subnetIds:
-          - subnet-067cc5f43fd51d979
 
 package:
   individually: true
-  patterns:
-    - "!node_modules/**"
-    - "!env/**"
 
 plugins:
   - serverless-prune-plugin
-  - serverless-python-requirements
-  - serverless-wsgi

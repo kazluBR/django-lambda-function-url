@@ -17,16 +17,14 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 WHITENOISE_STATIC_PREFIX = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+INSTALLED_APPS += ["django_s3_sqlite"]
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": "3306",
-        "OPTIONS": {
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"  # For mysql 5.7 or greater
-        },
+        "ENGINE": "django_s3_sqlite",
+        "NAME": f'{env("SQLITE_DB_NAME")}.db',
+        "BUCKET": env("AWS_S3_BUCKET_DB"),
+        "AWS_S3_ACCESS_KEY": env("AWS_S3_ACCESS_KEY"),
+        "AWS_S3_ACCESS_SECRET": env("AWS_S3_ACCESS_SECRET"),
     }
 }
