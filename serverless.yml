@@ -1,4 +1,4 @@
-service: django-lambda-2
+service: django-lambda
 
 params:
   staging:
