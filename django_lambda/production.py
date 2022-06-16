@@ -10,25 +10,21 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 
-INSTALLED_APPS += ["storages"]
+MIDDLEWARE += ["whitenoise.middleware.WhiteNoiseMiddleware"]
 
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+WHITENOISE_STATIC_PREFIX = "/static/"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATIC_LOCATION = "static"
-STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
-STATICFILES_STORAGE = "django_lambda.storage.StaticStorage"
+INSTALLED_APPS += ["django_s3_sqlite"]
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": "3306",
+        "ENGINE": "django_s3_sqlite",
+        "NAME": env("SQLITE_DB_NAME"),
+        "BUCKET": env("AWS_S3_BUCKET_DB"),
+        "AWS_S3_ACCESS_KEY": env("AWS_S3_ACCESS_KEY"),
+        "AWS_S3_ACCESS_SECRET": env("AWS_S3_ACCESS_SECRET"),
     }
 }

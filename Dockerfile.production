@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.9
+FROM public.ecr.aws/lambda/python:3.8
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -10,20 +10,16 @@ RUN python -m pip install --upgrade pip
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-RUN yum install sudo -y
-RUN sudo yum install -y gcc mysql-devel
-RUN pip install mysqlclient
-
 COPY manage.py .
 COPY .env.production .
 COPY django_lambda ./django_lambda
 COPY app ./app
+COPY django_s3_sqlite ./django_s3_sqlite
 COPY templates ./templates
 COPY static ./static
+COPY _sqlite3.so .
 
 RUN python manage.py collectstatic --noinput
 RUN python manage.py makemigrations
 RUN python manage.py migrate
 RUN python manage.py createsuperuser --noinput; exit 0
-
-CMD ["django_lambda.wsgi.handler"]
