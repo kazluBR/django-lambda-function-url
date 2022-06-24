@@ -4,6 +4,7 @@ boto3==1.24.10
 botocore==1.27.10
 Django==4.0.4
 django-environ==0.8.1
+django-s3-sqlite==0.0.5
 jmespath==1.0.0
 psycopg2-binary==2.9.3
 python-dateutil==2.8.2

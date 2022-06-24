@@ -14,7 +14,6 @@ COPY manage.py .
 COPY .env.production .
 COPY django_lambda ./django_lambda
 COPY app ./app
-COPY django_s3_sqlite ./django_s3_sqlite
 COPY templates ./templates
 COPY static ./static
 COPY _sqlite3.so .
