@@ -20,16 +20,15 @@
 - Create .env.<staging | prod> file in the root directory and configure the following variables:
 
 ```dotenv
-STAGE=
-DJANGO_SECRET_KEY=
-DJANGO_ALLOWED_HOSTS=
-DJANGO_SUPERUSER_USERNAME=
-DJANGO_SUPERUSER_PASSWORD=
-DJANGO_SUPERUSER_EMAIL=
-SQLITE_DB_NAME=
-AWS_S3_BUCKET_DB=
-AWS_S3_ACCESS_KEY=
-AWS_S3_ACCESS_SECRET=
+DJANGO_SECRET_KEY=<django secret key>
+DJANGO_ALLOWED_HOSTS=<[lambda url key].lambda-url.[region].on.aws>
+DJANGO_SUPERUSER_USERNAME=<username to createsuperuser cmd noinput>
+DJANGO_SUPERUSER_PASSWORD=<password to createsuperuser cmd noinput>
+DJANGO_SUPERUSER_EMAIL=<emailt to createsuperuser cmd noinput>
+SQLITE_DB_NAME=<name of sqlite db>
+AWS_S3_BUCKET_DB=<aws s3 bucket to store sqlite db>
+AWS_S3_ACCESS_KEY=<aws iam user key>
+AWS_S3_ACCESS_SECRET=<aws iam user secret>
 ```
 
 - Install packages: `npm install`
