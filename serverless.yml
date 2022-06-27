@@ -21,6 +21,8 @@ provider:
       django_lambda:
         path: "."
         file: ${param:DOCKERFILE}
+  environment:
+    DEBUG: 0
 
 functions:
   - app:
