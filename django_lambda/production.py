@@ -3,7 +3,7 @@ import os
 from .settings import *
 
 env = environ.Env()
-env.read_env(str(BASE_DIR / ".env.production"))
+env.read_env(str(BASE_DIR / ".env.prod"))
 
 DEBUG = os.environ.get('DEBUG', '0') == '1'
 
@@ -29,16 +29,3 @@ DATABASES = {
         "AWS_S3_ACCESS_SECRET": env("AWS_S3_ACCESS_SECRET"),
     }
 }
-
-if DEBUG:
-    INSTALLED_APPS += ["debug_toolbar"]
-    MIDDLEWARE += [
-        "debug_toolbar.middleware.DebugToolbarMiddleware",
-    ]
-
-    def show_toolbar(request):
-        return True
-
-    DEBUG_TOOLBAR_CONFIG = {
-        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-    }

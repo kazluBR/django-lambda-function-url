@@ -3,8 +3,7 @@ backports.zoneinfo==0.2.1
 boto3==1.24.10
 botocore==1.27.10
 Django==4.0.4
-django-debug-toolbar==3.5.0
-django-environ==0.8.1
+django-environ==0.9.0
 django-s3-sqlite==0.0.5
 jmespath==1.0.0
 psycopg2-binary==2.9.3

@@ -6,15 +6,38 @@ params:
   prod:
     DOCKERFILE: Dockerfile.production
 
+useDotenv: true
+
 custom:
+  deploymentBucket:
+    accelerate: true
+    blockPublicAccess: true
   prune:
     automatic: true
     number: 3
+  dotenv:
+    logging: false
+    include:
+      - AWS_S3_DEPLOYMENT_BUCKET
+      - DJANGO_ALLOWED_HOSTS
+      - SQLITE_DB_NAME
+      - AWS_S3_BUCKET_DB
+    required:
+      env:
+        - AWS_S3_DEPLOYMENT_BUCKET
+        - DJANGO_SECRET_KEY
+        - DJANGO_SUPERUSER_USERNAME
+        - DJANGO_SUPERUSER_PASSWORD
+        - SQLITE_DB_NAME
+        - AWS_S3_BUCKET_DB
+        - AWS_S3_ACCESS_KEY
+        - AWS_S3_ACCESS_SECRET
 
 provider:
   name: aws
-  region: us-east-1
+  region: ${env:REGION, 'us-east-1'}
   stage: staging
+  deploymentBucket: ${env:AWS_S3_DEPLOYMENT_BUCKET}
   logRetentionInDays: 3
   ecr:
     images:
@@ -36,4 +59,6 @@ package:
   individually: true
 
 plugins:
+  - serverless-deployment-bucket
   - serverless-prune-plugin
+  - serverless-dotenv-plugin

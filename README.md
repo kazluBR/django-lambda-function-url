@@ -20,6 +20,7 @@
 - Create .env.<staging | prod> file in the root directory and configure the following variables:
 
 ```dotenv
+REGION=<aws region>
 DJANGO_SECRET_KEY=<django secret key>
 DJANGO_ALLOWED_HOSTS=<[id].lambda-url.[region].on.aws>
 DJANGO_SUPERUSER_USERNAME=<username to createsuperuser cmd noinput>

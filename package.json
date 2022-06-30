@@ -23,6 +23,8 @@
   "homepage": "https://github.com/kazluBR/django-lambda-function-url#readme",
   "devDependencies": {
     "serverless": "^3.18.2",
+    "serverless-deployment-bucket": "^1.6.0",
+    "serverless-dotenv-plugin": "^4.0.1",
     "serverless-prune-plugin": "^2.0.1"
   }
 }

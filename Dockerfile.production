@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY manage.py .
-COPY .env.production .
+COPY .env.prod .
 COPY django_lambda ./django_lambda
 COPY app ./app
 COPY templates ./templates

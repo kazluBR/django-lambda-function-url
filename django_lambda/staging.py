@@ -29,16 +29,3 @@ DATABASES = {
         "AWS_S3_ACCESS_SECRET": env("AWS_S3_ACCESS_SECRET"),
     }
 }
-
-if DEBUG:
-    INSTALLED_APPS += ["debug_toolbar"]
-    MIDDLEWARE += [
-        "debug_toolbar.middleware.DebugToolbarMiddleware",
-    ]
-
-    def show_toolbar(request):
-        return True
-
-    DEBUG_TOOLBAR_CONFIG = {
-        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-    }
