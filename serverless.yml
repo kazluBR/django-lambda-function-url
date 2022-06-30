@@ -14,12 +14,13 @@ custom:
     blockPublicAccess: true
   prune:
     automatic: true
-    number: 3
+    number: ${env:VERSION_RETENTION_NUMBER, 3}
   dotenv:
     logging: false
     include:
+      - NUMBER_LAMBDA_VERSIONS_KEEP
+      - LOG_RETENTION_DAYS
       - AWS_S3_DEPLOYMENT_BUCKET
-      - DJANGO_ALLOWED_HOSTS
       - SQLITE_DB_NAME
       - AWS_S3_BUCKET_DB
     required:
@@ -37,8 +38,9 @@ provider:
   name: aws
   region: ${env:REGION, 'us-east-1'}
   stage: staging
-  deploymentBucket: ${env:AWS_S3_DEPLOYMENT_BUCKET}
-  logRetentionInDays: 3
+  deploymentBucket:
+    name: ${env:AWS_S3_DEPLOYMENT_BUCKET}
+  logRetentionInDays: ${env:LOG_RETENTION_DAYS, 7}
   ecr:
     images:
       django_lambda:
@@ -46,6 +48,7 @@ provider:
         file: ${param:DOCKERFILE}
   environment:
     DEBUG: 0
+    DJANGO_ALLOWED_HOST: .lambda-url.${self:provider.region}.on.aws
 
 functions:
   - app:
