@@ -1,14 +1,17 @@
 import environ
+import os
 from .settings import *
 
 env = environ.Env()
 env.read_env(str(BASE_DIR / ".env.staging"))
 
-DEBUG = False
+REGION = os.environ.get("REGION", "us-east-1")
+
+DEBUG = os.environ.get("DEBUG", "0") == "1"
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+ALLOWED_HOSTS = [os.environ.get("DJANGO_ALLOWED_HOST", f".lambda-url.{REGION}.on.aws")]
 
 MIDDLEWARE += ["whitenoise.middleware.WhiteNoiseMiddleware"]
 
