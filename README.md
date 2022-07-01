@@ -2,6 +2,13 @@
 
 ## A Django Project running on AWS Lambda Function Url
 
+## Requirements
+
+- Python 3.8
+- Node 14.x
+- Docker
+- AWS Account
+
 ## Running Local
 
 - Create virtual env: `python -m venv env`
