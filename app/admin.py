@@ -4,5 +4,5 @@ from .models import Category
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["name", "created", "modified"]
+    list_display = ["name", "created", "modified", "image_tag"]
 
