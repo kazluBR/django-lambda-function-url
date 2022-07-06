@@ -1,7 +1,11 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+import logging, json
 
-@login_required
+from django.shortcuts import render
+
+logger = logging.getLogger()
+
 def hello(request):
-    resource = request.GET.get("r", None)
-    return render(request, "index.html", {"name": resource or "World"})
+    resource = request.GET.get("r", "World")
+    logger.debug(json.dumps(request.COOKIES))
+    logger.info('Send hello to %s', resource)
+    return render(request, "index.html", { "name": resource })
