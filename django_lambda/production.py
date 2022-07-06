@@ -30,3 +30,5 @@ DATABASES = {
         "AWS_S3_ACCESS_SECRET": env("AWS_S3_ACCESS_SECRET"),
     }
 }
+
+LOGGING["root"]["level"] = "DEBUG" if DEBUG else "INFO"
