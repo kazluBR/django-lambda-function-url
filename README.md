@@ -23,7 +23,22 @@
 ## Running on AWS
 
 - Create bucket on AWS S3 to store sqlite db
-- Create IAM User with AmazonS3FullAccess and Access Key
+- Create IAM User with access key and attach a policy like that:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject"],
+      "Resource": "arn:aws:s3:::{YOUR_BUCKET_NAME}/*"
+    }
+  ]
+}
+```
+
 - Create .env.<staging | prod> file in the root directory and configure the following variables:
 
 ```dotenv

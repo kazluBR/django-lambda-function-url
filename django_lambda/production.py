@@ -28,6 +28,10 @@ DATABASES = {
         "BUCKET": env("AWS_S3_BUCKET_DB"),
         "AWS_S3_ACCESS_KEY": env("AWS_S3_ACCESS_KEY"),
         "AWS_S3_ACCESS_SECRET": env("AWS_S3_ACCESS_SECRET"),
+        "TEST": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        },
     }
 }
 
