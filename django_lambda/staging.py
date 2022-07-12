@@ -21,6 +21,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 WHITENOISE_STATIC_PREFIX = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+MEDIA_URL = "/tmp/media/"  # just for don't throw an error, media will not persist
+MEDIA_ROOT = (
+    BASE_DIR / "/tmp/media"
+)  # just for don't throw an error, media will not persist
+
 INSTALLED_APPS += ["django_s3_sqlite"]
 
 DATABASES = {
