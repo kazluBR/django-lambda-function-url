@@ -24,7 +24,7 @@ INSTALLED_APPS += ["django_s3_sqlite"]
 DATABASES = {
     "default": {
         "ENGINE": "django_s3_sqlite",
-        "NAME": env("SQLITE_DB_NAME"),
+        "NAME": f'{env("SQLITE_DB_NAME")}.db',
         "BUCKET": env("AWS_S3_BUCKET_DB"),
         "AWS_S3_ACCESS_KEY": env("AWS_S3_ACCESS_KEY"),
         "AWS_S3_ACCESS_SECRET": env("AWS_S3_ACCESS_SECRET"),
