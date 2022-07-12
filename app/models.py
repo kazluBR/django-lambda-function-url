@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.html import mark_safe
 
+
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
@@ -17,5 +18,8 @@ class Category(models.Model):
 
     def image_tag(self):
         if self.image:
-            return mark_safe('<img src="%s" width="100px" height="100px" />' % (self.image.url))
+            return mark_safe(
+                '<img src="%s" width="100px" height="100px" />' % (self.image.url)
+            )
+
     image_tag.short_description = "Image"

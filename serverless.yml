@@ -17,19 +17,13 @@ custom:
     number: ${env:VERSION_RETENTION_NUMBER, 3}
   dotenv:
     logging: false
-    include:
-      - NUMBER_LAMBDA_VERSIONS_KEEP
-      - LOG_RETENTION_DAYS
-      - AWS_S3_DEPLOYMENT_BUCKET
-      - SQLITE_DB_NAME
-      - AWS_S3_BUCKET_DB
+    include: []
     required:
       env:
         - AWS_S3_DEPLOYMENT_BUCKET
         - DJANGO_SECRET_KEY
         - DJANGO_SUPERUSER_USERNAME
         - DJANGO_SUPERUSER_PASSWORD
-        - SQLITE_DB_NAME
         - AWS_S3_BUCKET_DB
         - AWS_S3_ACCESS_KEY
         - AWS_S3_ACCESS_SECRET
