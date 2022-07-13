@@ -3,8 +3,16 @@ service: django-lambda
 params:
   staging:
     DOCKERFILE: Dockerfile.staging
+    VPC:
+      securityGroupIds: []
+      subnetIds: []
   prod:
     DOCKERFILE: Dockerfile.production
+    VPC:
+      securityGroupIds:
+        - ${env:SECURITY_GROUP_ID, ''}
+      subnetIds:
+        - ${env:SUBNET_ID, ''}
 
 useDotenv: true
 
@@ -15,10 +23,8 @@ custom:
   prune:
     automatic: true
     number: ${env:VERSION_RETENTION_NUMBER, 3}
-  dotenv:
-    logging: false
-    include: []
-    required:
+  required_envs:
+    staging:
       env:
         - AWS_S3_DEPLOYMENT_BUCKET
         - DJANGO_SECRET_KEY
@@ -27,13 +33,32 @@ custom:
         - AWS_S3_BUCKET_DB
         - AWS_S3_ACCESS_KEY
         - AWS_S3_ACCESS_SECRET
+    prod:
+      env:
+        - AWS_S3_DEPLOYMENT_BUCKET
+        - DJANGO_SECRET_KEY
+        - DJANGO_SUPERUSER_USERNAME
+        - DJANGO_SUPERUSER_PASSWORD
+        - AWS_S3_BUCKET_STORAGE
+        - AWS_S3_ACCESS_KEY
+        - AWS_S3_ACCESS_SECRET
+        - RDS_MYSQL_DB_HOST
+        - RDS_MYSQL_DB_NAME
+        - RDS_MYSQL_DB_USER
+        - RDS_MYSQL_DB_PASSWORD
+        - SECURITY_GROUP_ID
+        - SUBNET_ID
+  dotenv:
+    logging: false
+    include: []
+    required: ${self:custom.required_envs.${self:provider.stage}}
 
 provider:
   name: aws
   region: ${env:REGION, 'us-east-1'}
-  stage: staging
+  stage: ${opt:stage, 'staging'}
   deploymentBucket:
-    name: ${env:AWS_S3_DEPLOYMENT_BUCKET}
+    name: ${env:AWS_S3_DEPLOYMENT_BUCKET, ''}
   logRetentionInDays: ${env:LOG_RETENTION_DAYS, 7}
   ecr:
     images:
@@ -51,6 +76,7 @@ functions:
       timeout: 900
       url:
         cors: true
+      vpc: ${param:VPC}
 
 package:
   individually: true

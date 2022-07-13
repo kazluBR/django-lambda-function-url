@@ -1,5 +1,6 @@
 import environ
 import os
+import sys
 from .settings import *
 
 env = environ.Env()
@@ -36,10 +37,14 @@ DATABASES = {
         "AWS_S3_ACCESS_KEY": env("AWS_S3_ACCESS_KEY"),
         "AWS_S3_ACCESS_SECRET": env("AWS_S3_ACCESS_SECRET"),
         "TEST": {
-            "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         },
     }
 }
+
+if "test" in sys.argv:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.sqlite3",
+    }
 
 LOGGING["root"]["level"] = "DEBUG" if DEBUG else "INFO"

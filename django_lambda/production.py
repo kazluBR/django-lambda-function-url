@@ -1,5 +1,6 @@
 import environ
 import os
+import sys
 from .settings import *
 
 env = environ.Env()
@@ -15,7 +16,7 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = [os.environ.get("DJANGO_ALLOWED_HOST", f".lambda-url.{REGION}.on.aws")]
 
-INSTALLED_APPS += ["django_s3_sqlite", "storages"]
+INSTALLED_APPS += ["storages"]
 
 AWS_ACCESS_KEY_ID = env("AWS_S3_ACCESS_KEY")
 AWS_SECRET_ACCESS_KEY = env("AWS_S3_ACCESS_SECRET")
@@ -38,16 +39,21 @@ MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, PUBLIC_MEDIA_LOCATION)
 
 DATABASES = {
     "default": {
-        "ENGINE": "django_s3_sqlite",
-        "NAME": env("SQLITE_DB_NAME", default="database.db"),
-        "BUCKET": env("AWS_S3_BUCKET_DB"),
-        "AWS_S3_ACCESS_KEY": env("AWS_S3_ACCESS_KEY"),
-        "AWS_S3_ACCESS_SECRET": env("AWS_S3_ACCESS_SECRET"),
+        "ENGINE": "django.db.backends.mysql",
+        "HOST": env("RDS_MYSQL_DB_HOST"),
+        "NAME": env("RDS_MYSQL_DB_NAME"),
+        "USER": env("RDS_MYSQL_DB_USER"),
+        "PASSWORD": env("RDS_MYSQL_DB_PASSWORD"),
+        "PORT": env("DB_PORT", default="3306"),
         "TEST": {
-            "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         },
     }
 }
+
+if "test" in sys.argv:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.sqlite3",
+    }
 
 LOGGING["root"]["level"] = "DEBUG" if DEBUG else "INFO"
