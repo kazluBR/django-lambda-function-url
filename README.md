@@ -22,6 +22,10 @@
 
 ## Running on AWS (Staging)
 
+\*_Don't support upload of media files_
+
+\*_Concurrent writes will often be lost and not show up in concurrent readers. This is because the database is transferred between S3 storage and the Lambda instance for each request_
+
 - Create bucket on AWS S3 to store sqlite db
 - Create IAM User with access key and attach a policy like that:
 
@@ -123,10 +127,10 @@ SUBNET_ID=<aws subnet id of rds database>
 ## TODO
 
 - [x] Instructions to running locally and in the cloud
-- [x] Running unit tests on deploy
 - [x] Sqlite Database on S3 (staging)
 - [x] Saving static and media files on S3 (production)
-- [x] Serverless uupport for local/multiple environments
+- [x] Running unit tests on deploy
+- [x] Serverless support for local/multiple environments
 - [ ] AWS architecture diagram (staging and production)
 - [ ] CI/CD pipelines
 - [ ] Infrastructure as code on resources
