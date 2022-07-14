@@ -119,3 +119,15 @@ SUBNET_ID=<aws subnet id of rds database>
 
 - Put AWS credentials on your PC
 - Deploy on AWS: `npx sls deploy -s prod`
+
+## TODO
+
+- [x] Instructions to running locally and in the cloud
+- [x] Running unit tests on deploy
+- [x] Sqlite Database on S3 (staging)
+- [x] Saving static and media files on S3 (production)
+- [x] Serverless uupport for local/multiple environments
+- [ ] AWS architecture diagram (staging and production)
+- [ ] CI/CD pipelines
+- [ ] Infrastructure as code on resources
+- [ ] Sqlite Database on EFS (staging)
