@@ -9,15 +9,15 @@
 - Docker
 - AWS Account
 
-## Running Local
+## Running Locally
 
 - Create virtual env: `python -m venv env`
 - Activate virtual: `./env/Scripts/Activate.ps1`
 - Upgrade pip: `python -m pip install --upgrade pip`
 - Install packages: `pip install -r requirements.txt`
-- Apply database migrations: `python .\django_lambda\manage.py migrate`
-- Create superuser and fill the fields: `python .\django_lambda\manage.py createsuperuser`
-- Run server: `python .\django_lambda\manage.py runserver`
+- Apply database migrations: `python manage.py migrate`
+- Create superuser and fill the fields: `python manage.py createsuperuser`
+- Run server: `python manage.py runserver`
 - Access the website at link: http://localhost:8000/
 
 ## Running on AWS (Staging)
