@@ -130,8 +130,10 @@ SUBNET_ID=<aws subnet id of rds database>
 - [x] Sqlite Database on S3 (staging)
 - [x] Saving static and media files on S3 (production)
 - [x] Running unit tests on deploy
+- [x] Custom logs on CloudWatch
+- [x] Enable/disable Django debug on lambda config
 - [x] Serverless support for local/multiple environments
 - [ ] AWS architecture diagram (staging and production)
 - [ ] CI/CD pipelines
-- [ ] Infrastructure as code on resources
+- [ ] Resource's infrastructure as code
 - [ ] Sqlite Database on EFS (staging)
