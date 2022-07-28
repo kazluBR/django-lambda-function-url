@@ -1,0 +1,9 @@
+Conditions:
+  IsStaging:
+    Fn::Equals:
+      - ${self:provider.stage}
+      - "staging"
+  IsProduction:
+    Fn::Equals:
+      - ${self:provider.stage}
+      - "prod"
