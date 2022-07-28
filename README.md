@@ -133,6 +133,7 @@ SUBNET_ID=<aws subnet id of rds database>
 - [x] Custom logs on CloudWatch
 - [x] Enable/disable Django debug on lambda config
 - [x] Serverless support for local/multiple environments
+- [x] CloudWatch alarms configuration (production)
 - [ ] AWS architecture diagram (staging and production)
 - [ ] CI/CD pipelines
 - [ ] Resource's infrastructure as code
