@@ -1,0 +1,46 @@
+Resources:
+  DjangoLambdaAlarmError5XX:
+    Type: AWS::CloudWatch::Alarm
+    Condition: IsProduction
+    Properties:
+      ActionsEnabled: "True"
+      AlarmName: "${self:service}-${self:provider.stage}-app-Url5xxCount"
+      AlarmDescription: "${self:provider.stage}-${self:service} app 5XXError - ERROR"
+      AlarmActions:
+        - !Ref TopicAlertAlarmsDjangoLambda
+      OKActions:
+        - !Ref TopicAlertAlarmsDjangoLambda
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: "FunctionName"
+          Value: "${self:service}-${self:provider.stage}-app"
+      EvaluationPeriods: 1
+      Namespace: "AWS/Lambda"
+      MetricName: Url5xxCount
+      Statistic: Sum
+      Period: 60
+      Threshold: 1
+      TreatMissingData: notBreaching
+
+  DjangoLambdaAlarmError4XX:
+    Type: AWS::CloudWatch::Alarm
+    Condition: IsProduction
+    Properties:
+      ActionsEnabled: "True"
+      AlarmName: "${self:service}-${self:provider.stage}-app-Url4xxCount"
+      AlarmDescription: "${self:provider.stage}-${self:service} app 4XXError - ERROR"
+      AlarmActions:
+        - !Ref TopicAlertAlarmsDjangoLambda
+      OKActions:
+        - !Ref TopicAlertAlarmsDjangoLambda
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: "FunctionName"
+          Value: "${self:service}-${self:provider.stage}-app"
+      EvaluationPeriods: 1
+      Namespace: "AWS/Lambda"
+      MetricName: Url4xxCount
+      Statistic: Sum
+      Period: 60
+      Threshold: 1
+      TreatMissingData: notBreaching
