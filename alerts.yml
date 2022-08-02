@@ -1,0 +1,41 @@
+stages:
+  - prod
+topics:
+  ok:
+    topic: ${self:service}-${self:provider.stage}-alerts-ok
+    notifications:
+      - protocol: email
+        endpoint: ${env:DJANGO_SUPERUSER_EMAIL, ''}
+  alarm:
+    topic: ${self:service}-${self:provider.stage}-alerts-alarm
+    notifications:
+      - protocol: email
+        endpoint: ${env:DJANGO_SUPERUSER_EMAIL, ''}
+definitions:
+  url4xxError:
+    description: "${self:provider.stage}-${self:service} app 4XXError - ERROR"
+    namespace: "AWS/Lambda"
+    nameTemplate: "app-Url4xxCount"
+    metric: Url4xxCount
+    threshold: 1
+    statistic: Sum
+    period: 60
+    evaluationPeriods: 1
+    datapointsToAlarm: 1
+    comparisonOperator: GreaterThanOrEqualToThreshold
+    treatMissingData: notBreaching
+  url5xxError:
+    description: "${self:provider.stage}-${self:service} app 5XXError - ERROR"
+    namespace: "AWS/Lambda"
+    nameTemplate: "app-Url5xxCount"
+    metric: Url5xxCount
+    threshold: 1
+    statistic: Sum
+    period: 60
+    evaluationPeriods: 1
+    datapointsToAlarm: 1
+    comparisonOperator: GreaterThanOrEqualToThreshold
+    treatMissingData: notBreaching
+alarms:
+  - url4xxError
+  - url5xxError

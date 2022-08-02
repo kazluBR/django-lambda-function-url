@@ -1,6 +1,0 @@
-Resources:
-  TopicAlertAlarmsDjangoLambda:
-    Type: AWS::SNS::Topic
-    Condition: IsProduction
-    Properties:
-      TopicName: AlertAlarmsDjangoLambda

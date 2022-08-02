@@ -25,6 +25,7 @@
     "serverless": "^3.18.2",
     "serverless-deployment-bucket": "^1.6.0",
     "serverless-dotenv-plugin": "^4.0.1",
+    "serverless-plugin-aws-alerts": "^1.7.5",
     "serverless-prune-plugin": "^2.0.1"
   }
 }
