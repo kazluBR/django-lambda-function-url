@@ -50,7 +50,7 @@ resource "aws_iam_user_policy" "s3_user_policy" {
 
 resource "random_string" "db_password" {
   length  = 12
-  special = true
+  special = false
 }
 resource "aws_db_instance" "database" {
   identifier             = "django-lambda-database"
@@ -66,6 +66,6 @@ resource "aws_db_instance" "database" {
   multi_az               = false
   publicly_accessible    = true
   skip_final_snapshot    = true
-  db_subnet_group_name   = module.vpc.database_subnet_group
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids = ["${aws_security_group.main.id}"]
 }
