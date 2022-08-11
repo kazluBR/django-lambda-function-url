@@ -14,7 +14,7 @@ resource "aws_s3_bucket" "storage_bucket" {
 }
 
 resource "aws_iam_user" "s3_user" {
-  name = "s3-user-terraform"
+  name = "s3-user"
 }
 
 resource "aws_iam_access_key" "s3_user_access_key" {

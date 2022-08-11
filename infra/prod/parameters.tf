@@ -33,15 +33,3 @@ resource "aws_ssm_parameter" "db_password" {
   type  = "SecureString"
   value = random_string.db_password.result
 }
-
-resource "aws_ssm_parameter" "subnet_id" {
-  name  = "/vpc/public-subnets"
-  type  = "StringList"
-  value = join(",", module.vpc.public_subnets)
-}
-
-resource "aws_ssm_parameter" "security_group_id" {
-  name  = "/vpc/security-group-id"
-  type  = "String"
-  value = aws_security_group.main.id
-}

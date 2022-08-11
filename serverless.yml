@@ -3,16 +3,8 @@ service: django-lambda
 params:
   staging:
     DOCKERFILE: Dockerfile.staging
-    VPC:
-      securityGroupIds: []
-      subnetIds: []
   prod:
     DOCKERFILE: Dockerfile.production
-    VPC:
-      securityGroupIds:
-        - ${env:SECURITY_GROUP_ID, ''}
-      subnetIds:
-        - ${env:SUBNET_ID, ''}
 
 useDotenv: true
 
@@ -47,8 +39,6 @@ custom:
         - RDS_MYSQL_DB_NAME
         - RDS_MYSQL_DB_USER
         - RDS_MYSQL_DB_PASSWORD
-        - SECURITY_GROUP_ID
-        - SUBNET_ID
   dotenv:
     logging: false
     include: []
@@ -78,7 +68,6 @@ functions:
       timeout: 900
       url:
         cors: true
-      vpc: ${param:VPC}
 
 package:
   individually: true
