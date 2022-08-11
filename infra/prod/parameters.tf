@@ -1,3 +1,9 @@
+resource "aws_ssm_parameter" "bucket_db_name" {
+  name  = "/prod/bucket/storage"
+  type  = "String"
+  value = aws_s3_bucket.storage_files.bucket
+}
+
 resource "aws_ssm_parameter" "access_key" {
   name  = "/prod/s3-user/access-key"
   type  = "SecureString"
@@ -12,20 +18,20 @@ resource "aws_ssm_parameter" "access_secret" {
 
 resource "aws_ssm_parameter" "db_endpoint" {
   name  = "/prod/database/endpoint"
-  type  = "SecureString"
+  type  = "String"
   value = aws_db_instance.database.address
 }
 
 resource "aws_ssm_parameter" "db_name" {
   name  = "/prod/database/name"
-  type  = "SecureString"
-  value = var.db_name
+  type  = "String"
+  value = local.db_name
 }
 
 resource "aws_ssm_parameter" "db_user" {
   name  = "/prod/database/user"
-  type  = "SecureString"
-  value = var.db_user
+  type  = "String"
+  value = local.db_user
 }
 
 resource "aws_ssm_parameter" "db_password" {

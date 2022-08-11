@@ -9,16 +9,12 @@ params:
 useDotenv: true
 
 custom:
-  deploymentBucket:
-    accelerate: true
-    blockPublicAccess: true
   prune:
     automatic: true
     number: ${env:VERSION_RETENTION_NUMBER, 3}
   required_envs:
     staging:
       env:
-        - AWS_S3_DEPLOYMENT_BUCKET
         - DJANGO_SECRET_KEY
         - DJANGO_SUPERUSER_USERNAME
         - DJANGO_SUPERUSER_PASSWORD
@@ -27,7 +23,6 @@ custom:
         - AWS_S3_ACCESS_SECRET
     prod:
       env:
-        - AWS_S3_DEPLOYMENT_BUCKET
         - DJANGO_SECRET_KEY
         - DJANGO_SUPERUSER_USERNAME
         - DJANGO_SUPERUSER_PASSWORD
@@ -49,9 +44,9 @@ provider:
   name: aws
   region: ${env:REGION, 'us-east-1'}
   stage: ${opt:stage, 'staging'}
-  deploymentBucket:
-    name: ${env:AWS_S3_DEPLOYMENT_BUCKET, ''}
   logRetentionInDays: ${env:LOG_RETENTION_DAYS, 7}
+  stackTags:
+    service: ${self:service}
   ecr:
     images:
       django_lambda:
@@ -73,7 +68,6 @@ package:
   individually: true
 
 plugins:
-  - serverless-deployment-bucket
   - serverless-prune-plugin
   - serverless-dotenv-plugin
   - serverless-plugin-aws-alerts

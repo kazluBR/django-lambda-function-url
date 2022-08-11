@@ -1,20 +1,34 @@
+locals {
+  region       = "us-east-1"
+  service_name = "django-lambda"
+  stage        = "prod"
+  bucket_name  = "django-lambda-bucket-storage"
+  db_name      = "app"
+  db_user      = "admin"
+}
+
 provider "aws" {
-  region = var.region
+  region = local.region
 
   default_tags {
     tags = {
-      service = "django-lambda"
-      STAGE   = "prod"
+      service = local.service_name
+      STAGE   = local.stage
     }
   }
 }
 
-resource "aws_s3_bucket" "storage_bucket" {
-  bucket = var.bucket_name
+resource "random_string" "suffix" {
+  length  = 8
+  special = false
+  upper   = false
+}
+resource "aws_s3_bucket" "storage_files" {
+  bucket = "${local.bucket_name}-${local.stage}-${random_string.suffix.result}"
 }
 
 resource "aws_iam_user" "s3_user" {
-  name = "s3-user"
+  name = "s3-user-${local.stage}"
 }
 
 resource "aws_iam_access_key" "s3_user_access_key" {
@@ -24,7 +38,7 @@ resource "aws_iam_access_key" "s3_user_access_key" {
 data "aws_iam_policy_document" "s3_policy" {
   statement {
     actions   = ["s3:PutObject", "s3:GetObject", "s3:ListBucket", "s3:GetObjectAcl", "s3:PutObjectAcl", "s3:DeleteObject"]
-    resources = ["arn:aws:s3:::${var.bucket_name}", "arn:aws:s3:::${var.bucket_name}/*"]
+    resources = ["arn:aws:s3:::${aws_s3_bucket.storage_files.bucket}", "arn:aws:s3:::${aws_s3_bucket.storage_files.bucket}/*"]
   }
 }
 
@@ -34,6 +48,10 @@ resource "aws_iam_user_policy" "s3_user_policy" {
   policy = data.aws_iam_policy_document.s3_policy.json
 }
 
+resource "random_string" "db_password" {
+  length  = 12
+  special = true
+}
 resource "aws_db_instance" "database" {
   identifier             = "django-lambda-database"
   allocated_storage      = 10
@@ -41,8 +59,8 @@ resource "aws_db_instance" "database" {
   engine                 = "mysql"
   engine_version         = "5.7"
   instance_class         = "db.t2.micro"
-  db_name                = var.db_name
-  username               = var.db_user
+  db_name                = local.db_name
+  username               = local.db_user
   password               = random_string.db_password.result
   parameter_group_name   = "default.mysql5.7"
   multi_az               = false

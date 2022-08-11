@@ -1,16 +1,29 @@
+locals {
+  region       = "us-east-1"
+  service_name = "django-lambda"
+  stage        = "staging"
+  bucket_name  = "django-lambda-bucket-db"
+}
+
 provider "aws" {
-  region = var.region
+  region = local.region
 
   default_tags {
     tags = {
-      service = "django-lambda"
-      STAGE   = "staging"
+      service = local.service_name
+      STAGE   = local.stage
     }
   }
 }
 
+resource "random_string" "suffix" {
+  length  = 8
+  special = false
+  upper   = false
+}
+
 resource "aws_s3_bucket" "sqlite_db" {
-  bucket = var.bucket_name
+  bucket = "${local.bucket_name}-${local.stage}-${random_string.suffix.result}"
 }
 
 resource "aws_s3_bucket_public_access_block" "sqlite_db_access" {
@@ -30,7 +43,7 @@ resource "aws_s3_bucket_ownership_controls" "sqlite_db_access_ownership" {
 }
 
 resource "aws_iam_user" "s3_user" {
-  name = "s3-user"
+  name = "s3-user-${local.stage}"
 }
 
 resource "aws_iam_access_key" "s3_user_access_key" {
@@ -40,7 +53,7 @@ resource "aws_iam_access_key" "s3_user_access_key" {
 data "aws_iam_policy_document" "s3_policy" {
   statement {
     actions   = ["s3:PutObject", "s3:GetObject"]
-    resources = ["arn:aws:s3:::${var.bucket_name}/*"]
+    resources = ["arn:aws:s3:::${aws_s3_bucket.sqlite_db.bucket}/*"]
   }
 }
 

@@ -1,10 +1,10 @@
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "django-lambda-vpc"
+  name = "django-lambda-vpc-${local.stage}"
   cidr = "10.0.0.0/16"
 
-  azs             = ["${var.region}a", "${var.region}b"]
+  azs             = ["${local.region}a", "${local.region}b"]
   private_subnets = []
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
 
@@ -19,7 +19,7 @@ module "vpc" {
 resource "aws_security_group" "main" {
   vpc_id = module.vpc.default_vpc_id
 
-  name = "django-lambda-sg"
+  name = "django-lambda-sg-${local.stage}"
 
   ingress {
     from_port   = 3306
