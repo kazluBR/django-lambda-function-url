@@ -53,7 +53,7 @@ AWS_S3_ACCESS_SECRET=<aws iam user secret from ssm /staging/s3-user/access-secre
 ## Running on AWS (Production)
 
 - Put AWS credentials on your PC
-- Go to infra staging resources: `cd infra/prod`
+- Go to infra production resources: `cd infra/prod`
 - Initialize terraform: `terraform init`
 - Create all resources: `terraform apply`
 - Create `.env.prod` file in the root directory and configure the following variables:
