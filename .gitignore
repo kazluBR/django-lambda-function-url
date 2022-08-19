@@ -7,3 +7,7 @@ node_modules
 package-lock.json
 media
 .serverless
+.terraform*
+terraform.tfstate*
+terraform.tfvars
+.infracost
