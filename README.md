@@ -23,6 +23,8 @@
 
 ## Running on AWS (Staging)
 
+![alt text](/images/staging-architecture.jpg)
+
 \*_Don't support upload of media files_
 
 \*_Concurrent writes will often be lost and not show up in concurrent readers. This is because the database is transferred between S3 storage and the Lambda instance for each request_
@@ -51,6 +53,8 @@ AWS_S3_ACCESS_SECRET=<aws iam user secret from ssm /staging/s3-user/access-secre
 - Deploy on AWS: `npx sls deploy -s staging`
 
 ## Running on AWS (Production)
+
+![alt text](/images/prod-architecture.jpg)
 
 - Put AWS credentials on your PC
 - Go to infra production resources: `cd infra/prod`
@@ -88,6 +92,6 @@ RDS_MYSQL_DB_PASSWORD=<master password of mysql db from ssm /prod/database/passw
 - [x] Serverless support for local/multiple environments
 - [x] CloudWatch alarms configuration (production)
 - [x] Resource's infrastructure as code
-- [ ] AWS architecture diagram (staging and production)
+- [x] AWS architecture diagram (staging and production)
 - [ ] CI/CD pipelines
 - [ ] Sqlite Database on EFS (staging)
