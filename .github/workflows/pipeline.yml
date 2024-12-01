@@ -59,9 +59,11 @@ jobs:
 
       - name: Load Environment Variables
         run: |
-          set -o allexport
-          source .env.${{ github.event.inputs.stage }}
-          set +o allexport
+          while IFS= read -r line; do
+            if [[ ! "$line" =~ ^#.* && -n "$line" ]]; then
+              export "$line"
+            fi
+          done < .env.${{ github.event.inputs.stage }}
 
       - name: Serverless Deploy
         run: npx sls deploy -s ${{ github.event.inputs.stage }}
