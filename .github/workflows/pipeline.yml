@@ -48,16 +48,16 @@ jobs:
           echo "AWS_S3_ACCESS_SECRET=${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${STAGE}
 
           if [ "$STAGE" == "staging" ]; then
-            echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${STAGE}
+            echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB || '' }}" >> .env.${STAGE}
           fi
 
           if [ "$STAGE" == "production" ]; then
-            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${STAGE}
-            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${STAGE}
-            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${STAGE}
-            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${STAGE}
-            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${STAGE}
-            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${STAGE}
+            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL || '' }}" >> .env.${STAGE}
+            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE || '' }}" >> .env.${STAGE}
+            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST || '' }}" >> .env.${STAGE}
+            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME || '' }}" >> .env.${STAGE}
+            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER || '' }}" >> .env.${STAGE}
+            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD || '' }}" >> .env.${STAGE}
           fi
 
       - name: Setup NodeJS
