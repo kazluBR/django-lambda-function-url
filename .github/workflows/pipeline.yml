@@ -19,7 +19,7 @@ jobs:
       - name: Set Stage Environment Variable
         id: set_stage
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          if [ "${{ github.ref }}" == "refs/heads/master" ]; then
             echo "STAGE=production" >> $GITHUB_ENV
             echo "::set-output name=stage::production"
           else
