@@ -54,6 +54,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Load Environment Variables
+        run: |
+          set -o allexport
+          source .env.${{ github.event.inputs.stage }}
+          set +o allexport
+
       - name: Serverless Deploy
-        env: $(cat .env.${{ github.event.inputs.stage }} | xargs)
         run: npx sls deploy -s ${{ github.event.inputs.stage }}
