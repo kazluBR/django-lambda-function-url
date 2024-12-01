@@ -40,7 +40,7 @@ jobs:
 
       - name: Set Environment Variables for ${{ needs.set_stage.outputs.stage }}
         run: |
-          printf "DJANGO_SECRET_KEY=%s\n" "${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          printf "DJANGO_SECRET_KEY=%s\n" "${{ secrets.DJANGO_SECRET_KEY | toJSON }}" >> .env.${{ needs.set_stage.outputs.stage }}
           printf "DJANGO_SUPERUSER_USERNAME=%s\n" "${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{ needs.set_stage.outputs.stage }}
           printf "DJANGO_SUPERUSER_PASSWORD=%s\n" "${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{ needs.set_stage.outputs.stage }}
           printf "AWS_S3_ACCESS_KEY=%s\n" "${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{ needs.set_stage.outputs.stage }}
