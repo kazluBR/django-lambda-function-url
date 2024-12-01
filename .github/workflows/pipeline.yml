@@ -28,7 +28,6 @@ jobs:
   deploy:
     needs: set_stage
     runs-on: ubuntu-latest
-    environment: ${{ env.stage }}
     steps:
       - uses: actions/checkout@v2
 
