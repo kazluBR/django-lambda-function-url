@@ -4,5 +4,5 @@ django-environ==0.9.0
 django-storages==1.12.3
 django-s3-sqlite==0.0.5
 Pillow==10.0.1
-serverless-wsgi==3.0.0
+serverless-wsgi==3.0.5
 whitenoise==6.2.0
