@@ -50,15 +50,6 @@ jobs:
             echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB || '' }}" >> .env.${{needs.set_stage.outputs.stage}}
           fi
 
-          if [ "${{needs.set_stage.outputs.stage}}" == "production" ]; then
-            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL || '' }}" >> .env.${{needs.set_stage.outputs.stage}}
-            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE || '' }}" >> .env.${{needs.set_stage.outputs.stage}}
-            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST || '' }}" >> .env.${{needs.set_stage.outputs.stage}}
-            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME || '' }}" >> .env.${{needs.set_stage.outputs.stage}}
-            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER || '' }}" >> .env.${{needs.set_stage.outputs.stage}}
-            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD || '' }}" >> .env.${{needs.set_stage.outputs.stage}}
-          fi
-
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
