@@ -16,3 +16,17 @@ resource "aws_ssm_parameter" "access_secret" {
   value = aws_iam_access_key.s3_user_access_key.secret
 }
 
+resource "random_string" "django_secret_key" {
+  length  = 50
+  special = true
+  upper   = true
+  lower   = true
+  numeric = true
+}
+
+resource "aws_ssm_parameter" "django_secret_key" {
+  name  = "/staging/django-secret-key"
+  type  = "SecureString"
+  value = random_string.django_secret_key.result
+}
+
