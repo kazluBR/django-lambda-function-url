@@ -57,10 +57,10 @@ AWS_S3_ACCESS_SECRET=<aws iam user secret from ssm /staging/s3-user/access-secre
 ![alt text](/images/prod-architecture.jpg)
 
 - Put AWS credentials on your PC
-- Go to infra production resources: `cd infra/prod`
+- Go to infra production resources: `cd infra/production`
 - Initialize terraform: `terraform init`
 - Create all resources: `terraform apply`
-- Create `.env.prod` file in the root directory and configure the following variables:
+- Create `.env.production` file in the root directory and configure the following variables:
 
 ```dotenv
 REGION=<aws region> #defaults to us-east-1
@@ -70,16 +70,24 @@ DJANGO_SECRET_KEY=<django secret key>
 DJANGO_SUPERUSER_USERNAME=<username of superuser django admin>
 DJANGO_SUPERUSER_PASSWORD=<password of superuser django admin>
 DJANGO_SUPERUSER_EMAIL=<email of superuser django admin>
-AWS_S3_BUCKET_STORAGE=<aws s3 bucket to store static and media files from ssm /prod/bucket/storag>
-AWS_S3_ACCESS_KEY=<aws iam user key from ssm /prod/s3-user/access-key>
-AWS_S3_ACCESS_SECRET=<aws iam user secret from ssm /prod/s3-user/access-secret>
-RDS_MYSQL_DB_HOST=<aws endpoint of rds aurora database from ssm /prod/database/endpoint>
-RDS_MYSQL_DB_NAME=<name of mysql db from ssm /prod/database/name>
-RDS_MYSQL_DB_USER=<master username of mysql db from ssm /prod/database/user>
-RDS_MYSQL_DB_PASSWORD=<master password of mysql db from ssm /prod/database/password>
+AWS_S3_BUCKET_STORAGE=<aws s3 bucket to store static and media files from ssm /production/bucket/storage>
+AWS_S3_ACCESS_KEY=<aws iam user key from ssm /production/s3-user/access-key>
+AWS_S3_ACCESS_SECRET=<aws iam user secret from ssm /production/s3-user/access-secret>
+RDS_MYSQL_DB_HOST=<aws endpoint of rds aurora database from ssm /production/database/endpoint>
+RDS_MYSQL_DB_NAME=<name of mysql db from ssm /production/database/name>
+RDS_MYSQL_DB_USER=<master username of mysql db from ssm /production/database/user>
+RDS_MYSQL_DB_PASSWORD=<master password of mysql db from ssm /production/database/password>
 ```
 
-- Deploy on AWS: `npx sls deploy -s prod`
+- Deploy on AWS: `npx sls deploy -s production`
+
+## CI/CD Configuration
+
+- Follow the steps to configure a github actions OIDC Provider on AWS: https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
+- Configure staging and production environments in your github repository
+- Create the respective secrets in each environment with the same name as in `.env.{stage}`
+- Create the AWS_ASSUME_ROLE secret in each of the environments with the arn of the role created in the first step.
+- Now you can see the pipeline working [aqui](https://github.com/kazluBR/django-lambda-function-url/actions) . When pushing the staging branch, the deploy will update the staging environment and when doing it in the main, the production environment.
 
 ## TODO
 
@@ -93,5 +101,5 @@ RDS_MYSQL_DB_PASSWORD=<master password of mysql db from ssm /prod/database/passw
 - [x] CloudWatch alarms configuration (production)
 - [x] Resource's infrastructure as code
 - [x] AWS architecture diagram (staging and production)
-- [ ] CI/CD pipelines
+- [x] CI/CD pipelines
 - [ ] Sqlite Database on EFS (staging)

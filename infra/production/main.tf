@@ -1,7 +1,7 @@
 locals {
   region       = "us-east-1"
   service_name = "django-lambda"
-  stage        = "prod"
+  stage        = "production"
   bucket_name  = "django-lambda-bucket-storage"
   db_name      = "app"
   db_user      = "admin"

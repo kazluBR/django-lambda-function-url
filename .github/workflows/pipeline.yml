@@ -1,33 +1,81 @@
 name: pipeline
+
 on:
-  workflow_dispatch:
-    inputs:
-      stage:
-        description: 'Stage'
-        type: choice
-        options:
-          - staging
-          - production
+  push:
+    branches:
+      - staging
+      - main
+
 permissions:
   id-token: write
   contents: read
+
 jobs:
-  deploy:
-    name: ${{ github.ref_name }}:${{ github.event.inputs.stage }}
+  set_stage:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.stage }}
+    outputs:
+      stage: ${{ steps.set_stage.outputs.stage }}
+    steps:
+      - name: Set Stage Environment Variable
+        id: set_stage
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "STAGE=production" >> $GITHUB_ENV
+            echo "::set-output name=stage::production"
+          else
+            echo "STAGE=staging" >> $GITHUB_ENV
+            echo "::set-output name=stage::staging"
+          fi
+
+  deploy:
+    needs: set_stage
+    runs-on: ubuntu-latest
+    environment: ${{ needs.set_stage.outputs.stage }}
     steps:
       - uses: actions/checkout@v2
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }} 
-          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+          aws-region: ${{ secrets.REGION || 'us-east-1' }}
+
+      - name: Set Environment Variables for ${{ needs.set_stage.outputs.stage }}
+        run: |
+          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          echo "AWS_S3_ACCESS_SECRET=${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${{ needs.set_stage.outputs.stage }}
+
+          if [ "${{ needs.set_stage.outputs.stage }}" == "staging" ]; then
+            echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          fi
+
+          if [ "${{ needs.set_stage.outputs.stage }}" == "production" ]; then
+            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          fi
+
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
           node-version: 20.x
+
       - name: Install Dependencies
         run: npm install
+
+      - name: Load Environment Variables
+        run: |
+          while IFS= read -r line; do
+            if [[ ! "$line" =~ ^#.* && -n "$line" ]]; then
+              export "$line"
+            fi
+          done < .env.${{ needs.set_stage.outputs.stage }}
+
       - name: Serverless Deploy
-        run: npx sls deploy -s ${{ github.event.inputs.stage }}
+        run: npx sls deploy -s ${{ needs.set_stage.outputs.stage }}

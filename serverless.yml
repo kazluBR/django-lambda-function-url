@@ -6,7 +6,7 @@ params:
     VPC:
       securityGroupIds: []
       subnetIds: []
-  prod:
+  production:
     DOCKERFILE: Dockerfile.production
     VPC:
       securityGroupIds:
