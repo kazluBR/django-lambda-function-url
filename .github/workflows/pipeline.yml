@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       stage:
-        description: 'Stage'
+        description: "Stage"
         type: choice
         options:
           - staging
@@ -13,21 +13,38 @@ permissions:
   contents: read
 jobs:
   deploy:
-    name: ${{ github.ref_name }}:${{ github.event.inputs.stage }}
+    name: Deploy ${{ github.event.inputs.stage }}
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.stage }}
     steps:
       - uses: actions/checkout@v2
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }} 
-          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+          aws-region: ${{ secrets.REGION || 'us-east-1' }}
+
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
           node-version: 20.x
+
       - name: Install Dependencies
         run: npm install
+
       - name: Serverless Deploy
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
+          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+          DJANGO_SUPERUSER_EMAIL: ${{ github.event.inputs.stage == 'production' && secrets.DJANGO_SUPERUSER_EMAIL || '' }}
+          AWS_S3_BUCKET_DB: ${{ github.event.inputs.stage == 'staging' && secrets.AWS_S3_BUCKET_DB || '' }}
+          AWS_S3_BUCKET_STORAGE: ${{ github.event.inputs.stage == 'production' && secrets.AWS_S3_BUCKET_STORAGE || '' }}
+          AWS_S3_ACCESS_KEY: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          AWS_S3_ACCESS_SECRET: ${{ secrets.AWS_S3_ACCESS_SECRET }}
+          RDS_MYSQL_DB_HOST: ${{ github.event.inputs.stage == 'production' && secrets.RDS_MYSQL_DB_HOST || '' }}
+          RDS_MYSQL_DB_NAME: ${{ github.event.inputs.stage == 'production' && secrets.RDS_MYSQL_DB_NAME || '' }}
+          RDS_MYSQL_DB_USER: ${{ github.event.inputs.stage == 'production' && secrets.RDS_MYSQL_DB_USER || '' }}
+          RDS_MYSQL_DB_PASSWORD: ${{ github.event.inputs.stage == 'production' && secrets.RDS_MYSQL_DB_PASSWORD || '' }}
         run: npx sls deploy -s ${{ github.event.inputs.stage }}
