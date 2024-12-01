@@ -87,7 +87,7 @@ RDS_MYSQL_DB_PASSWORD=<master password of mysql db from ssm /production/database
 - Configure staging and production environments in your github repository
 - Create the respective secrets in each environment with the same name as in `.env.{stage}`
 - Create the AWS_ASSUME_ROLE secret in each of the environments with the arn of the role created in the first step.
-- Now you can see the pipeline working [aqui](https://github.com/kazluBR/django-lambda-function-url/actions) . When pushing the staging branch, the deploy will update the staging environment and when doing it in the main, the production environment.
+- Now you can see the pipeline working [aqui](https://github.com/kazluBR/django-lambda-function-url/actions). When pushing the staging branch, the deploy will update the staging environment and when doing it in the master, the production environment.
 
 ## TODO
 
