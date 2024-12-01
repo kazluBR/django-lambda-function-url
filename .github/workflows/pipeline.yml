@@ -1,0 +1,33 @@
+name: pipeline
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: 'Stage'
+        type: choice
+        options:
+          - staging
+          - production
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  deploy:
+    name: ${{ github.ref_name }}:${{ github.event.inputs.stage }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.stage }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }} 
+          aws-region: us-east-1
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.x
+      - name: Install Dependencies
+        run: npm install
+      - name: Serverless Deploy
+        run: npx sls deploy -s ${{ github.event.inputs.stage }}
