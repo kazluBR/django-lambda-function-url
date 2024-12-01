@@ -25,6 +25,27 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           aws-region: ${{ secrets.REGION || 'us-east-1' }}
 
+      - name: Set Environment Variables for ${{ github.event.inputs.stage }}
+        run: |
+          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{ github.event.inputs.stage }}
+          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{ github.event.inputs.stage }}
+          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{ github.event.inputs.stage }}
+          echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{ github.event.inputs.stage }}
+          echo "AWS_S3_ACCESS_SECRET=${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${{ github.event.inputs.stage }}
+
+          if [ "${{ github.event.inputs.stage }}" == "staging" ]; then
+            echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${{ github.event.inputs.stage }}
+          fi
+
+          if [ "${{ github.event.inputs.stage }}" == "production" ]; then
+            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${{ github.event.inputs.stage }}
+            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${{ github.event.inputs.stage }}
+            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${{ github.event.inputs.stage }}
+            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${{ github.event.inputs.stage }}
+            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${{ github.event.inputs.stage }}
+            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{ github.event.inputs.stage }}
+          fi
+
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
@@ -34,17 +55,5 @@ jobs:
         run: npm install
 
       - name: Serverless Deploy
-        env:
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
-          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
-          DJANGO_SUPERUSER_EMAIL: ${{ github.event.inputs.stage == 'production' && secrets.DJANGO_SUPERUSER_EMAIL || '' }}
-          AWS_S3_BUCKET_DB: ${{ github.event.inputs.stage == 'staging' && secrets.AWS_S3_BUCKET_DB || '' }}
-          AWS_S3_BUCKET_STORAGE: ${{ github.event.inputs.stage == 'production' && secrets.AWS_S3_BUCKET_STORAGE || '' }}
-          AWS_S3_ACCESS_KEY: ${{ secrets.AWS_S3_ACCESS_KEY }}
-          AWS_S3_ACCESS_SECRET: ${{ secrets.AWS_S3_ACCESS_SECRET }}
-          RDS_MYSQL_DB_HOST: ${{ github.event.inputs.stage == 'production' && secrets.RDS_MYSQL_DB_HOST || '' }}
-          RDS_MYSQL_DB_NAME: ${{ github.event.inputs.stage == 'production' && secrets.RDS_MYSQL_DB_NAME || '' }}
-          RDS_MYSQL_DB_USER: ${{ github.event.inputs.stage == 'production' && secrets.RDS_MYSQL_DB_USER || '' }}
-          RDS_MYSQL_DB_PASSWORD: ${{ github.event.inputs.stage == 'production' && secrets.RDS_MYSQL_DB_PASSWORD || '' }}
+        env: $(cat .env.${{ github.event.inputs.stage }} | xargs)
         run: npx sls deploy -s ${{ github.event.inputs.stage }}
