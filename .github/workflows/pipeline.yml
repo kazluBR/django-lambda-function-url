@@ -12,18 +12,20 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy to ${{ env.STAGE }}
+    name: Deploy to ${{ steps.set_stage.outputs.stage }}
     runs-on: ubuntu-latest
-    environment: ${{ env.STAGE }}
+    environment: ${{ steps.set_stage.outputs.stage }}
     steps:
       - uses: actions/checkout@v2
 
       - name: Set Stage Environment Variable
+        id: set_stage
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "STAGE=production" >> $GITHUB_ENV
+            echo "stage=production" >> $GITHUB_ENV
           else
-            echo "STAGE=staging" >> $GITHUB_ENV
+            echo "stage=staging" >> $GITHUB_ENV
+          fi
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -31,25 +33,25 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           aws-region: ${{ secrets.REGION || 'us-east-1' }}
 
-      - name: Set Environment Variables for ${{ env.STAGE }}
+      - name: Set Environment Variables for ${{ env.stage }}
         run: |
-          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{ env.STAGE }}
-          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{ env.STAGE }}
-          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{ env.STAGE }}
-          echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{ env.STAGE }}
-          echo "AWS_S3_ACCESS_SECRET=${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${{ env.STAGE }}
+          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{ env.stage }}
+          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{ env.stage }}
+          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{ env.stage }}
+          echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{ env.stage }}
+          echo "AWS_S3_ACCESS_SECRET=${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${{ env.stage }}
 
-          if [ "${{ env.STAGE }}" == "staging" ]; then
-            echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${{ env.STAGE }}
+          if [ "${{ env.stage }}" == "staging" ]; then
+            echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${{ env.stage }}
           fi
 
-          if [ "${{ env.STAGE }}" == "production" ]; then
-            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${{ env.STAGE }}
-            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${{ env.STAGE }}
-            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${{ env.STAGE }}
-            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${{ env.STAGE }}
-            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${{ env.STAGE }}
-            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{ env.STAGE }}
+          if [ "${{ env.stage }}" == "production" ]; then
+            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${{ env.stage }}
+            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${{ env.stage }}
+            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${{ env.stage }}
+            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${{ env.stage }}
+            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${{ env.stage }}
+            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{ env.stage }}
           fi
 
       - name: Setup NodeJS
@@ -66,7 +68,7 @@ jobs:
             if [[ ! "$line" =~ ^#.* && -n "$line" ]]; then
               export "$line"
             fi
-          done < .env.${{ env.STAGE }}
+          done < .env.${{ env.stage }}
 
       - name: Serverless Deploy
-        run: npx sls deploy -s ${{ env.STAGE }}
+        run: npx sls deploy -s ${{ env.stage }}
