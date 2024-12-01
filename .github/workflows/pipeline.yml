@@ -46,6 +46,9 @@ jobs:
             echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{ github.event.inputs.stage }}
           fi
 
+      - name: Debug .env file content
+        run: cat .env.${{ github.event.inputs.stage }}
+
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
