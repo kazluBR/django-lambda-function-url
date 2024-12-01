@@ -1,23 +1,29 @@
 name: pipeline
+
 on:
-  workflow_dispatch:
-    inputs:
-      stage:
-        description: "Stage"
-        type: choice
-        options:
-          - staging
-          - production
+  push:
+    branches:
+      - staging
+      - main
+
 permissions:
   id-token: write
   contents: read
+
 jobs:
   deploy:
-    name: Deploy ${{ github.event.inputs.stage }}
+    name: Deploy to ${{ env.STAGE }}
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.stage }}
+    environment: ${{ env.STAGE }}
     steps:
       - uses: actions/checkout@v2
+
+      - name: Set Stage Environment Variable
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "STAGE=production" >> $GITHUB_ENV
+          else
+            echo "STAGE=staging" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -25,29 +31,26 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           aws-region: ${{ secrets.REGION || 'us-east-1' }}
 
-      - name: Set Environment Variables for ${{ github.event.inputs.stage }}
+      - name: Set Environment Variables for ${{ env.STAGE }}
         run: |
-          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{ github.event.inputs.stage }}
-          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{ github.event.inputs.stage }}
-          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{ github.event.inputs.stage }}
-          echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{ github.event.inputs.stage }}
-          echo "AWS_S3_ACCESS_SECRET=${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${{ github.event.inputs.stage }}
+          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{ env.STAGE }}
+          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{ env.STAGE }}
+          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{ env.STAGE }}
+          echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{ env.STAGE }}
+          echo "AWS_S3_ACCESS_SECRET=${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${{ env.STAGE }}
 
-          if [ "${{ github.event.inputs.stage }}" == "staging" ]; then
-            echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${{ github.event.inputs.stage }}
+          if [ "${{ env.STAGE }}" == "staging" ]; then
+            echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${{ env.STAGE }}
           fi
 
-          if [ "${{ github.event.inputs.stage }}" == "production" ]; then
-            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${{ github.event.inputs.stage }}
-            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${{ github.event.inputs.stage }}
-            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${{ github.event.inputs.stage }}
-            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${{ github.event.inputs.stage }}
-            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${{ github.event.inputs.stage }}
-            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{ github.event.inputs.stage }}
+          if [ "${{ env.STAGE }}" == "production" ]; then
+            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${{ env.STAGE }}
+            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${{ env.STAGE }}
+            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${{ env.STAGE }}
+            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${{ env.STAGE }}
+            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${{ env.STAGE }}
+            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{ env.STAGE }}
           fi
-
-      - name: Debug .env file content
-        run: cat .env.${{ github.event.inputs.stage }}
 
       - name: Setup NodeJS
         uses: actions/setup-node@v2
@@ -63,7 +66,7 @@ jobs:
             if [[ ! "$line" =~ ^#.* && -n "$line" ]]; then
               export "$line"
             fi
-          done < .env.${{ github.event.inputs.stage }}
+          done < .env.${{ env.STAGE }}
 
       - name: Serverless Deploy
-        run: npx sls deploy -s ${{ github.event.inputs.stage }}
+        run: npx sls deploy -s ${{ env.STAGE }}
