@@ -38,25 +38,25 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           aws-region: ${{ secrets.REGION || 'us-east-1' }}
 
-      - name: Set Environment Variables for ${{needs.set_stage.outputs.stage}}
+      - name: Set Environment Variables for ${{ needs.set_stage.outputs.stage }}
         run: |
-          printf "DJANGO_SECRET_KEY='%s'\n" "${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{needs.set_stage.outputs.stage}}
-          printf "DJANGO_SUPERUSER_USERNAME='%s'\n" "${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{needs.set_stage.outputs.stage}}
-          printf "DJANGO_SUPERUSER_PASSWORD='%s'\n" "${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{needs.set_stage.outputs.stage}}
-          printf "AWS_S3_ACCESS_KEY='%s'\n" "${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{needs.set_stage.outputs.stage}}
-          printf "AWS_S3_ACCESS_SECRET='%s'\n" "${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${{needs.set_stage.outputs.stage}}
+          printf "DJANGO_SECRET_KEY=%s\n" "${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          printf "DJANGO_SUPERUSER_USERNAME=%s\n" "${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          printf "DJANGO_SUPERUSER_PASSWORD=%s\n" "${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          printf "AWS_S3_ACCESS_KEY=%s\n" "${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          printf "AWS_S3_ACCESS_SECRET=%s\n" "${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${{ needs.set_stage.outputs.stage }}
 
-          if [ "${{needs.set_stage.outputs.stage}}" == "staging" ]; then
-            printf "AWS_S3_BUCKET_DB='%s'\n" "${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${{needs.set_stage.outputs.stage}}
+          if [ "${{ needs.set_stage.outputs.stage }}" == "staging" ]; then
+            printf "AWS_S3_BUCKET_DB=%s\n" "${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${{ needs.set_stage.outputs.stage }}
           fi
 
-          if [ "${{needs.set_stage.outputs.stage}}" == "production" ]; then
-            printf "DJANGO_SUPERUSER_EMAIL='%s'\n" "${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${{needs.set_stage.outputs.stage}}
-            printf "AWS_S3_BUCKET_STORAGE='%s'\n" "${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${{needs.set_stage.outputs.stage}}
-            printf "RDS_MYSQL_DB_HOST='%s'\n" "${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${{needs.set_stage.outputs.stage}}
-            printf "RDS_MYSQL_DB_NAME='%s'\n" "${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${{needs.set_stage.outputs.stage}}
-            printf "RDS_MYSQL_DB_USER='%s'\n" "${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${{needs.set_stage.outputs.stage}}
-            printf "RDS_MYSQL_DB_PASSWORD='%s'\n" "${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{needs.set_stage.outputs.stage}}
+          if [ "${{ needs.set_stage.outputs.stage }}" == "production" ]; then
+            printf "DJANGO_SUPERUSER_EMAIL=%s\n" "${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            printf "AWS_S3_BUCKET_STORAGE=%s\n" "${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            printf "RDS_MYSQL_DB_HOST=%s\n" "${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            printf "RDS_MYSQL_DB_NAME=%s\n" "${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            printf "RDS_MYSQL_DB_USER=%s\n" "${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${{ needs.set_stage.outputs.stage }}
+            printf "RDS_MYSQL_DB_PASSWORD=%s\n" "${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{ needs.set_stage.outputs.stage }}
           fi
 
       - name: Setup NodeJS
