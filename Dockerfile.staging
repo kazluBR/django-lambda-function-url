@@ -9,6 +9,7 @@ WORKDIR /${LAMBDA_TASK_ROOT}
 RUN python -m pip install --upgrade pip
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install pysqlite3
 
 COPY manage.py .
 COPY .env.staging .
@@ -16,7 +17,6 @@ COPY django_lambda ./django_lambda
 COPY app ./app
 COPY templates ./templates
 COPY static ./static
-COPY _sqlite3.so .
 
 RUN python manage.py collectstatic --noinput
 RUN python manage.py makemigrations
