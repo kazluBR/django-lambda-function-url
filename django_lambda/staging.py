@@ -3,11 +3,6 @@ import os
 import sys
 from .settings import *
 
-__import__("pysqlite3")
-import sys
-
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
-
 env = environ.Env()
 env.read_env(str(BASE_DIR / ".env.staging"))
 
