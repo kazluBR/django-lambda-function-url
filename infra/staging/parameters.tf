@@ -25,8 +25,22 @@ resource "random_string" "django_secret_key" {
 }
 
 resource "aws_ssm_parameter" "django_secret_key" {
-  name  = "/staging/django-secret-key"
+  name  = "/staging/django/secret-key"
   type  = "SecureString"
   value = random_string.django_secret_key.result
+}
+
+resource "random_string" "django_superuser_password" {
+  length  = 8
+  special = false
+  upper   = true
+  lower   = true
+  numeric = true
+}
+
+resource "aws_ssm_parameter" "django_superuser_password" {
+  name  = "/staging/django/superuser-password"
+  type  = "SecureString"
+  value = random_string.django_superuser_password.result
 }
 
