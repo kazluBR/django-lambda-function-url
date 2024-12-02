@@ -23,7 +23,6 @@ custom:
     staging:
       env:
         - DJANGO_SECRET_KEY
-        - DJANGO_SUPERUSER_USERNAME
         - DJANGO_SUPERUSER_PASSWORD
         - DJANGO_SUPERUSER_EMAIL
         - AWS_S3_BUCKET_DB
@@ -32,7 +31,6 @@ custom:
     prod:
       env:
         - DJANGO_SECRET_KEY
-        - DJANGO_SUPERUSER_USERNAME
         - DJANGO_SUPERUSER_PASSWORD
         - DJANGO_SUPERUSER_EMAIL
         - AWS_S3_BUCKET_STORAGE
