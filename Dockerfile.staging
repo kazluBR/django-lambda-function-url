@@ -21,7 +21,7 @@ COPY _sqlite3.so .
 RUN python manage.py collectstatic --noinput
 RUN python manage.py makemigrations
 RUN python manage.py migrate
-RUN python manage.py createsuperuser --noinput
+RUN python manage.py createsuperuser --noinput; exit 0
 RUN python manage.py test
 
 CMD ["django_lambda.wsgi.handler"]
