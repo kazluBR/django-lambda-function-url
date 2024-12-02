@@ -10,8 +10,8 @@ params:
     DOCKERFILE: Dockerfile.production
     VPC:
       securityGroupIds:
-        - ${ssm:/prod/vpc/security-group-id, ''}
-      subnetIds: ${ssm:/prod/vpc/public-subnets, ''}
+        - ${ssm:/production/vpc/security-group-id, ''}
+      subnetIds: ${ssm:/production/vpc/public-subnets, ''}
 
 useDotenv: true
 
