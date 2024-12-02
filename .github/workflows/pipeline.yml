@@ -42,8 +42,8 @@ jobs:
         run: |
           {
             echo "REGION='${{ secrets.REGION }}'";
-            echo "VERSION_RETENTION_NUMBER='${{ secrets.VERSION_RETENTION_NUMBER }}'";
-            echo "LOG_RETENTION_DAYS='${{ secrets.LOG_RETENTION_DAYS }}'";
+            echo "VERSION_RETENTION_NUMBER=${{ secrets.VERSION_RETENTION_NUMBER }}";
+            echo "LOG_RETENTION_DAYS=${{ secrets.LOG_RETENTION_DAYS }}";
             echo "DJANGO_SECRET_KEY='${{ secrets.DJANGO_SECRET_KEY }}'";
             echo "DJANGO_SUPERUSER_USERNAME='${{ secrets.DJANGO_SUPERUSER_USERNAME }}'";
             echo "DJANGO_SUPERUSER_PASSWORD='${{ secrets.DJANGO_SUPERUSER_PASSWORD }}'";
