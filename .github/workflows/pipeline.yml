@@ -74,6 +74,9 @@ jobs:
             fi
           } >> .env.${{ needs.set_stage.outputs.stage }}
 
+      - name: Log content of .env.staging
+        run: cat .env.staging
+
       - name: Setup NodeJS
         uses: actions/setup-node@v2
         with:
