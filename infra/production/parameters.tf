@@ -54,7 +54,7 @@ resource "aws_ssm_parameter" "security_group_id" {
 
 resource "random_string" "django_secret_key" {
   length  = 50
-  special = true
+  special = false
   upper   = true
   lower   = true
   numeric = true
@@ -64,4 +64,18 @@ resource "aws_ssm_parameter" "django_secret_key" {
   name  = "/production/django-secret-key"
   type  = "SecureString"
   value = random_string.django_secret_key.result
+}
+
+resource "random_string" "django_superuser_password" {
+  length  = 8
+  special = false
+  upper   = true
+  lower   = true
+  numeric = true
+}
+
+resource "aws_ssm_parameter" "django_superuser_password" {
+  name  = "/production/django/superuser-password"
+  type  = "SecureString"
+  value = random_string.django_superuser_password.result
 }
