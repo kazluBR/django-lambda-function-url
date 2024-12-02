@@ -38,9 +38,9 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
           aws-region: ${{ secrets.REGION || 'us-east-1' }}
 
-      - name: Debug Secrets
+      - name: Debug DJANGO_SECRET_KEY
         run: |
-          echo "DEBUG: DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}"
+          echo "DEBUG: DJANGO_SECRET_KEY='${{ secrets.DJANGO_SECRET_KEY }}'"
 
       - name: Set Environment Variables for ${{ needs.set_stage.outputs.stage }}
         run: |
