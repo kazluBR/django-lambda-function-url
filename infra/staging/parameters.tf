@@ -18,7 +18,7 @@ resource "aws_ssm_parameter" "access_secret" {
 
 resource "random_string" "django_secret_key" {
   length  = 50
-  special = true
+  special = false
   upper   = true
   lower   = true
   numeric = true
