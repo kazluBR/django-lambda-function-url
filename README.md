@@ -39,7 +39,7 @@
 REGION=<aws region> #defaults to us-east-1
 VERSION_RETENTION_NUMBER=<number of lambda versions to keep> #defaults to 3
 LOG_RETENTION_DAYS=<number of days to keep log data> #defaults to 7
-DJANGO_SECRET_KEY=<django secret key>
+DJANGO_SECRET_KEY=<django secret key from ssm /staging/django-secret-key>
 DJANGO_SUPERUSER_USERNAME=<username of superuser django admin>
 DJANGO_SUPERUSER_PASSWORD=<password of superuser django admin>
 DJANGO_SUPERUSER_EMAIL=<email of superuser django admin>
@@ -66,7 +66,7 @@ AWS_S3_ACCESS_SECRET=<aws iam user secret from ssm /staging/s3-user/access-secre
 REGION=<aws region> #defaults to us-east-1
 VERSION_RETENTION_NUMBER=<number of lambda versions to keep> #defaults to 3
 LOG_RETENTION_DAYS=<number of days to keep log data> #defaults to 7
-DJANGO_SECRET_KEY=<django secret key>
+DJANGO_SECRET_KEY=<django secret key from ssm /production/django-secret-key>
 DJANGO_SUPERUSER_USERNAME=<username of superuser django admin>
 DJANGO_SUPERUSER_PASSWORD=<password of superuser django admin>
 DJANGO_SUPERUSER_EMAIL=<email of superuser django admin>

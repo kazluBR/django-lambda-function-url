@@ -19,18 +19,16 @@ jobs:
       - name: Set Stage Environment Variable
         id: set_stage
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/master" ]; then
-            echo "STAGE=production" >> $GITHUB_ENV
-            echo "::set-output name=stage::production"
+          if [[ $GITHUB_REF == "refs/heads/master" ]]; then
+            echo "stage=production" >> $GITHUB_OUTPUT
           else
-            echo "STAGE=staging" >> $GITHUB_ENV
-            echo "::set-output name=stage::staging"
+            echo "stage=staging" >> $GITHUB_OUTPUT
           fi
 
   deploy:
     needs: set_stage
     runs-on: ubuntu-latest
-    environment: ${{ needs.set_stage.outputs.stage }}
+    environment: ${{needs.set_stage.outputs.stage}}
     steps:
       - uses: actions/checkout@v2
 
@@ -41,25 +39,48 @@ jobs:
           aws-region: ${{ secrets.REGION || 'us-east-1' }}
 
       - name: Set Environment Variables for ${{ needs.set_stage.outputs.stage }}
+        env:
+          REGION: ${{ secrets.REGION || 'us-east-1' }}
+          VERSION_RETENTION_NUMBER: ${{ secrets.VERSION_RETENTION_NUMBER || 3 }}
+          LOG_RETENTION_DAYS: ${{ secrets.LOG_RETENTION_DAYS || 7 }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
+          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+          AWS_S3_ACCESS_KEY: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          AWS_S3_ACCESS_SECRET: ${{ secrets.AWS_S3_ACCESS_SECRET }}
+          AWS_S3_BUCKET_DB: ${{ secrets.AWS_S3_BUCKET_DB || '' }}
+          SQLITE_DB_NAME: ${{ secrets.SQLITE_DB_NAME || 'database.db' }}
+          DJANGO_SUPERUSER_EMAIL: ${{ secrets.DJANGO_SUPERUSER_EMAIL || '' }}
+          AWS_S3_BUCKET_STORAGE: ${{ secrets.AWS_S3_BUCKET_STORAGE || '' }}
+          RDS_MYSQL_DB_HOST: ${{ secrets.RDS_MYSQL_DB_HOST || '' }}
+          RDS_MYSQL_DB_NAME: ${{ secrets.RDS_MYSQL_DB_NAME || '' }}
+          RDS_MYSQL_DB_USER: ${{ secrets.RDS_MYSQL_DB_USER || '' }}
+          RDS_MYSQL_DB_PASSWORD: ${{ secrets.RDS_MYSQL_DB_PASSWORD || '' }}
         run: |
-          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env.${{ needs.set_stage.outputs.stage }}
-          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.${{ needs.set_stage.outputs.stage }}
-          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.${{ needs.set_stage.outputs.stage }}
-          echo "AWS_S3_ACCESS_KEY=${{ secrets.AWS_S3_ACCESS_KEY }}" >> .env.${{ needs.set_stage.outputs.stage }}
-          echo "AWS_S3_ACCESS_SECRET=${{ secrets.AWS_S3_ACCESS_SECRET }}" >> .env.${{ needs.set_stage.outputs.stage }}
+          {
+            echo "REGION=${REGION}";
+            echo "VERSION_RETENTION_NUMBER=${VERSION_RETENTION_NUMBER}";
+            echo "LOG_RETENTION_DAYS=${LOG_RETENTION_DAYS}";
+            echo "DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}";
+            echo "DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}";
+            echo "DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}";
+            echo "AWS_S3_ACCESS_KEY=${AWS_S3_ACCESS_KEY}";
+            echo "AWS_S3_ACCESS_SECRET=${AWS_S3_ACCESS_SECRET}";
 
-          if [ "${{ needs.set_stage.outputs.stage }}" == "staging" ]; then
-            echo "AWS_S3_BUCKET_DB=${{ secrets.AWS_S3_BUCKET_DB }}" >> .env.${{ needs.set_stage.outputs.stage }}
-          fi
+            if [ "${{ needs.set_stage.outputs.stage }}" == "staging" ]; then
+              echo "AWS_S3_BUCKET_DB=${AWS_S3_BUCKET_DB}";
+              echo "SQLITE_DB_NAME=${SQLITE_DB_NAME}";
+            fi
 
-          if [ "${{ needs.set_stage.outputs.stage }}" == "production" ]; then
-            echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.${{ needs.set_stage.outputs.stage }}
-            echo "AWS_S3_BUCKET_STORAGE=${{ secrets.AWS_S3_BUCKET_STORAGE }}" >> .env.${{ needs.set_stage.outputs.stage }}
-            echo "RDS_MYSQL_DB_HOST=${{ secrets.RDS_MYSQL_DB_HOST }}" >> .env.${{ needs.set_stage.outputs.stage }}
-            echo "RDS_MYSQL_DB_NAME=${{ secrets.RDS_MYSQL_DB_NAME }}" >> .env.${{ needs.set_stage.outputs.stage }}
-            echo "RDS_MYSQL_DB_USER=${{ secrets.RDS_MYSQL_DB_USER }}" >> .env.${{ needs.set_stage.outputs.stage }}
-            echo "RDS_MYSQL_DB_PASSWORD=${{ secrets.RDS_MYSQL_DB_PASSWORD }}" >> .env.${{ needs.set_stage.outputs.stage }}
-          fi
+            if [ "${{ needs.set_stage.outputs.stage }}" == "production" ]; then
+              echo "DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}";
+              echo "AWS_S3_BUCKET_STORAGE=${AWS_S3_BUCKET_STORAGE}";
+              echo "RDS_MYSQL_DB_HOST=${RDS_MYSQL_DB_HOST}";
+              echo "RDS_MYSQL_DB_NAME=${RDS_MYSQL_DB_NAME}";
+              echo "RDS_MYSQL_DB_USER=${RDS_MYSQL_DB_USER}";
+              echo "RDS_MYSQL_DB_PASSWORD=${RDS_MYSQL_DB_PASSWORD}";
+            fi
+          } >> .env.${{ needs.set_stage.outputs.stage }}
 
       - name: Setup NodeJS
         uses: actions/setup-node@v2
@@ -75,7 +96,7 @@ jobs:
             if [[ ! "$line" =~ ^#.* && -n "$line" ]]; then
               export "$line"
             fi
-          done < .env.${{ needs.set_stage.outputs.stage }}
+          done < .env.${{needs.set_stage.outputs.stage}}
 
       - name: Serverless Deploy
-        run: npx sls deploy -s ${{ needs.set_stage.outputs.stage }}
+        run: npx sls deploy -s ${{needs.set_stage.outputs.stage}}
