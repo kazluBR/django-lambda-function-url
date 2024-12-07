@@ -56,7 +56,7 @@ AWS_S3_ACCESS_SECRET=<aws iam user secret from ssm /staging/s3-user/access-secre
 
 ## Running on AWS (Production)
 
-![alt text](/images/prod-architecture.jpg)
+![alt text](/images/production-architecture.jpg)
 
 - Put AWS credentials on your PC
 - Go to infra production resources: `cd infra/production`
@@ -72,7 +72,7 @@ DJANGO_SECRET_KEY=<django secret key from ssm /production/django/secret-key>
 DJANGO_SUPERUSER_USERNAME=<username of superuser django admin> #defaults to admin
 DJANGO_SUPERUSER_PASSWORD=<password of superuser django admin from ssm /production/django/superuser-password>
 DJANGO_SUPERUSER_EMAIL=<email of superuser django admin>
-AWS_S3_BUCKET_STORAGE=<aws s3 bucket to store static and media files from ssm /production/bucket/storage>
+AWS_S3_CUSTOM_DOMAIN=<aws cloudfront url of s3 storage static and media files from ssm /production/cloudfront/url>
 AWS_S3_ACCESS_KEY=<aws iam user key from ssm /production/s3-user/access-key>
 AWS_S3_ACCESS_SECRET=<aws iam user secret from ssm /production/s3-user/access-secret>
 RDS_MYSQL_DB_HOST=<aws endpoint of rds aurora database from ssm /production/database/endpoint>
