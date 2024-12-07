@@ -28,7 +28,7 @@ custom:
         - AWS_S3_BUCKET_DB
         - AWS_S3_ACCESS_KEY
         - AWS_S3_ACCESS_SECRET
-    prod:
+    production:
       env:
         - DJANGO_SECRET_KEY
         - DJANGO_SUPERUSER_PASSWORD
