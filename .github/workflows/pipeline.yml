@@ -57,7 +57,7 @@ jobs:
             fi
 
             if [ "${{ needs.set_stage.outputs.stage }}" == "production" ]; then
-              echo "AWS_S3_BUCKET_STORAGE='${{ secrets.AWS_S3_BUCKET_STORAGE }}'";
+              echo "AWS_S3_CUSTOM_DOMAIN='${{ secrets.AWS_S3_CUSTOM_DOMAIN }}'";
               echo "RDS_MYSQL_DB_HOST='${{ secrets.RDS_MYSQL_DB_HOST }}'";
               echo "RDS_MYSQL_DB_NAME='${{ secrets.RDS_MYSQL_DB_NAME }}'";
               echo "RDS_MYSQL_DB_USER='${{ secrets.RDS_MYSQL_DB_USER }}'";
