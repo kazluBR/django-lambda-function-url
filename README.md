@@ -84,6 +84,8 @@ RDS_MYSQL_DB_PASSWORD=<master password of mysql db from ssm /production/database
 
 - Deploy on AWS: `npx sls deploy -s production`
 
+![alt text](/images/categories-page.png)
+
 ## CI/CD Configuration
 
 - Follow the steps to configure a github actions OIDC Provider on AWS: https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
