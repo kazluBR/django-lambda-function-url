@@ -1,3 +1,9 @@
+resource "aws_ssm_parameter" "bucket_db_name" {
+  name  = "/production/bucket/storage"
+  type  = "String"
+  value = aws_s3_bucket.storage_files.bucket
+}
+
 resource "aws_ssm_parameter" "cloudfront_url" {
   name  = "/production/cloudfront/url"
   type  = "String"
