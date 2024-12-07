@@ -1,5 +1,5 @@
 stages:
-  - prod
+  - production
 topics:
   ok:
     topic: ${self:service}-${self:provider.stage}-alerts-ok
