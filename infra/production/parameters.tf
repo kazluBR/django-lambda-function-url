@@ -1,7 +1,7 @@
-resource "aws_ssm_parameter" "bucket_db_name" {
-  name  = "/production/bucket/storage"
+resource "aws_ssm_parameter" "cloudfront_url" {
+  name  = "/production/cloudfront/url"
   type  = "String"
-  value = aws_s3_bucket.storage_files.bucket
+  value = aws_cloudfront_distribution.storage_files_distribution.domain_name
 }
 
 resource "aws_ssm_parameter" "access_key" {
