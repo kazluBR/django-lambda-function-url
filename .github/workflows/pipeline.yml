@@ -80,7 +80,6 @@ jobs:
               export "$line"
             fi
           done < .env.${{needs.set_stage.outputs.stage}}
-          cat .env.${{needs.set_stage.outputs.stage}}
 
       - name: Serverless Deploy
         run: npx sls deploy -s ${{needs.set_stage.outputs.stage}}
