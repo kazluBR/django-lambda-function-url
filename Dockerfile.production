@@ -24,6 +24,7 @@ RUN yum install -y \
     libffi-devel \
     openssl-devel
 RUN pip install pymysql
+COPY _sqlite3.so .
 
 RUN python manage.py collectstatic --noinput
 RUN python manage.py makemigrations
