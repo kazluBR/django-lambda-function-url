@@ -4,7 +4,7 @@ import sys
 from .settings import *
 
 env = environ.Env()
-env.read_env(str(BASE_DIR / ".env.prod"))
+env.read_env(str(BASE_DIR / ".env.production"))
 
 REGION = os.environ.get("REGION", "us-east-1")
 
