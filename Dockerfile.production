@@ -23,7 +23,6 @@ RUN yum install -y \
     python3-devel \
     libffi-devel \
     openssl-devel
-RUN pip install mysqlclient
 
 RUN python manage.py collectstatic --noinput
 RUN python manage.py makemigrations
