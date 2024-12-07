@@ -52,6 +52,8 @@ AWS_S3_ACCESS_SECRET=<aws iam user secret from ssm /staging/s3-user/access-secre
 - Install packages: `npm install`
 - Deploy on AWS: `npx sls deploy -s staging`
 
+![alt text](/images/hello-page.png)
+
 ## Running on AWS (Production)
 
 ![alt text](/images/prod-architecture.jpg)
