@@ -3,6 +3,9 @@ import os
 import sys
 from .settings import *
 
+import pymysql
+pymysql.install_as_MySQLdb()
+
 env = environ.Env()
 env.read_env(str(BASE_DIR / ".env.production"))
 
@@ -24,7 +27,7 @@ AWS_STORAGE_BUCKET_NAME = env("AWS_S3_BUCKET_STORAGE")
 AWS_DEFAULT_REGION = REGION
 
 AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
-AWS_DEFAULT_ACL = "public-read"
+AWS_DEFAULT_ACL = None
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
 }
