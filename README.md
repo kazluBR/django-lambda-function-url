@@ -8,6 +8,7 @@
 - Node 20.x
 - Docker
 - Terraform
+- Serverless Framework v3
 - AWS Account
 
 ## Running Locally
